@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fresh Produce Delivery</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+  <nav>
+    <div class="logo">FreshFarm</div>
+    <ul class="nav-links">
+
+      <li><a href="Farmer.html">Home</a></li>
+      <li><a href="{{ url_for('farmer_login') }}">Farmer Login</a></li>
+      <li><a href="{{url_for('customer_login')}}">Customer Login</a></li>  
+    </ul> 
+  </nav>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Fresh Produce<br><span>Delivery</span></h1>
+      <p>From Our Farm to Your Doorstep</p><br>
+      
+    </div>
+  </section>
+  <section id="sustainable" class="sustainable-section">
+    <div class="sustainable-content">
+        <h2>Support Sustainable Farming</h2>
+        <p>
+          Sustainable vegetable farming is a method of growing vegetables in a way that protects the environment, conserves natural resources, and supports the well-being of farmers and communities. It focuses on long-term productivity without harming the soil, water, or biodiversity.
+        </p>
+        <button class="cta-button">Learn More</button>
+    </div>
+    <div class="sustainable-illustration">
+        
+        <img src="https://grangettos.com/cdn/shop/articles/shutterstock_590135870_1600x.jpg?v=1617921748">
+    </div>
+</section>
+<section class="about-modern">
+  <div class="about-image">
+    <img src="https://images.unsplash.com/photo-1567306226416-28f0efdc88ce" alt="Farm Delivery Image">
+  </div>
+  <div class="about-text">
+    <h2>From Fields to Families</h2>
+    <p>Farm to Door delivers nature’s best directly to your home. Our mission? Fresh, local, and sustainable food – made accessible to everyone.</p>
+    <p>We partner with passionate farmers who grow responsibly. Together, we eliminate middlemen and reduce carbon footprints, ensuring fair prices for growers and unbeatable freshness for you.</p>
+    <p>Get weekly baskets filled with seasonal produce, organic dairy, and more. Freshness you can taste. Sustainability you can trust.</p>
+  </div>
+</section>
+
+<section class="gallery-section">
+  <h2>Our Farm Fresh Moments</h2>
+  <div class="gallery-grid">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQY9m7vvWBW4NzIvl0Z-FOOeqGnd-B_Grf9zA505ah-tpqKD8wfNN2aVzX5wRAR7KYkB6E&usqp=CAU" alt="Fresh Tomatoes">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlyRDuh8zKq1LX1LaX96nUhmruCIfBGwm_hMKcnF3LmsdujG1NPL5kbUJYIEpmg7EnV2Q&usqp=CAU" alt="Farmers Delivering Vegetables">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu3HCuU9kVvM6qRcJrJcEqPtAf0xMHd96RNG-6Qan6d1nD1vOVB_0ecNvOffW7tcnGvUs&usqp=CAU" alt="Basket of Produce">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-tqsDYOtTiaGdtrteKAtQ9L4i03G276Cc2Q&s" alt="Fresh Greens on Field">
+
+  </div>
+</section>
+
+  <section class="contact-section">
+    <div class="form-container">
+      <h2>Contact Us</h2>
+      <form>
+        <div class="form-row">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Your Email" required>
+        </div>
+        <textarea placeholder="Your Message..." required></textarea>
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+    <div class="image-container">
+      <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3" alt="Contact Image">
+    </div>
+  </section>
+   <section>
+  <div class="container">
+    <div class="sec">
+      <h3>INDIA</h3>
+      <p>ANDHRA PRADESH</p>
+
+      
+    </div>
+
+    <div class="sec">
+      <h3>Operating Hours</h3>
+      <p><strong>Mon - Fri:</strong> 8am - 8pm</p>
+      <p><strong>Saturday:</strong> 9am - 7pm</p>
+      <p><strong>Sunday:</strong> 9am - 8pm</p>
+    </div>
+
+    <div class="sec">
+      <h3>Delivery Hours</h3>
+      <p><strong>Mondays:</strong> 8am - 10pm</p>
+      <p><strong>Wednesdays:</strong> 8am - 8pm</p>
+      <p><strong>Fridays:</strong> 8am - 8pm</p>
+    </div>
+
+    <div class="sec">
+      <h3>Customer Support</h3>
+      <p><strong>Live Chat:</strong> Available 24/7</p>
+      <p><strong>Email:</strong> farmtodoordelivery@gmail.com</p>
+      <p><strong>Phone:</strong>+91 9609333222(8am - 8pm)</p>
+    </div>
+  </section>
+<footer>
+  &copy; 2025 Farm to Door | All rights reserved
+</footer>
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Customer Registration</title>
+  <script src="{{ url_for('static', filename='js/registration.js') }}"></script>
+  <style>
+  body {
+  background-color: #e6f2e6;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  display: flex;
+  justify-content: center;   /* Center horizontally */
+  align-items: center;       /* Center vertically */
+  height: 100vh;             /* Full viewport height */
+  margin: 0;                 /* Remove default body margin */
+}
+
+
+  .form-container {
+    background-color: #ffffff;
+    border: 2px solid #2d572c;
+    border-radius: 10px;
+    padding: 25px;
+    max-width: 700px;
+    width: 100%;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  h2, h3 {
+    color: #2d572c;
+    text-align: center;
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .form-row label {
+    width: 180px;
+    font-weight: bold;
+    color: #2d572c;
+  }
+
+  .form-row input,
+  .form-row select {
+    flex: 1;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+  }
+
+  .radio-group {
+    margin-bottom: 15px;
+  }
+
+  .radio-option {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+  }
+
+  .radio-option input[type="radio"] {
+    margin-right: 8px;
+  }
+
+  #payment_options {
+    display: none;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  #payment_options label {
+    width: auto;
+    margin-right: 10px;
+  }
+
+  .submit-btn {
+    background-color: #2d572c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 100%;
+  }
+
+  .submit-btn:hover {
+    background-color: #1f3f1f;
+  }
+</style>
+  <script>
+    function togglePaymentOptions() {
+    const paymentDropdown = document.getElementById("payment_method");
+    const marketPickup = document.getElementById("market_pickup").checked;
+    const doorstepDelivery = document.getElementById("doorstep_delivery").checked;
+    const paymentDiv = document.getElementById("payment_options");
+
+    paymentDropdown.innerHTML = `<option value="">--Select--</option>`;
+
+    if (marketPickup) {
+      const options = ["Cash Payment", "UPI"];
+      options.forEach(opt => {
+        const optionElem = document.createElement("option");
+        optionElem.value = opt;
+        optionElem.text = opt;
+        paymentDropdown.appendChild(optionElem);
+      });
+      paymentDiv.style.display = "flex";  // ✅ Show the dropdown
+    } else if (doorstepDelivery) {
+      const options = ["Cash on Delivery", "UPI"];
+      options.forEach(opt => {
+        const optionElem = document.createElement("option");
+        optionElem.value = opt;
+        optionElem.text = opt;
+        paymentDropdown.appendChild(optionElem);
+      });
+      paymentDiv.style.display = "flex";  // ✅ Show the dropdown
+    } else {
+      paymentDiv.style.display = "none"; // Optional fallback
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Customer Registration</h2>
+
+    <form action="{{ url_for('register_customer') }}" method="POST" onsubmit="return validateForm(event)">
+
+
+
+
+      <div class="form-row">
+        <label class="label-colon" for="name">Name :</label>
+        <input type="text" name="name" id="name" required>
+      </div>
+
+      <div class="form-row">
+        <label class="label-colon" for="phone">Phone Number :</label>
+        <input type="tel" name="phone" id="phone" required>
+      </div>
+
+      <div class="form-row">
+        <label class="label-colon" for="alt_phone">Alternate Phone Number :</label>
+        <input type="tel" name="alt_phone" id="alt_phone" required>
+      </div>
+
+      <div class="form-row">
+        <label class="label-colon" for="email">Email (Optional) :</label>
+        <input type="email" name="email" id="email">
+      </div>
+
+      <h3>Address</h3>
+
+      <div class="form-row">
+        <label class="label-colon" for="street">Street Address :</label>
+        <input type="text" name="street" id="street" required>
+      </div>
+
+      <div class="form-row">
+        <label class="label-colon" for="city">City :</label>
+        <input type="text" name="city" id="city" required>
+      </div>
+
+      <div class="form-row">
+        <label class="label-colon" for="pincode">Pincode :</label>
+        <input type="text" name="pincode" id="pincode" required>
+      </div>
+
+      <h3>Order Method</h3>
+<div class="radio-group">
+  <div class="radio-option">
+    <input type="radio" name="order_type" id="market_pickup" value="Market Pickup" onchange="togglePaymentOptions()" required>
+    <label for="market_pickup">I will order vegetables online and pick them up at the market.</label>
+  </div>
+
+  <div class="radio-option">
+    <input type="radio" name="order_type" id="doorstep_delivery" value="Doorstep Delivery" onchange="togglePaymentOptions()">
+    <label for="doorstep_delivery">I prefer online ordering with doorstep delivery.</label>
+  </div>
+</div>
+
+<div class="form-row" id="payment_options">
+  <label class="label-colon" for="payment_method">Mode of Payment :</label>
+  <select name="payment_method" id="payment_method" required>
+    <option value="">--Select--</option>
+  </select>
+</div>
+
+      <button type="submit" class="submit-btn" >Submit Details</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Details and Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .customer-section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .no-orders {
+            color: gray;
+            font-style: italic;
+            padding-top: 10px;
+        }
+
+        .grand-total {
+            text-align: right;
+            font-weight: bold;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Customer Details and Their Orders</h2>
+
+    {% for customer in customers %}
+    <div class="customer-section">
+        <h3>👤 {{ customer.name }} ({{ customer.phone }})</h3>
+        <p>
+            <strong>Email:</strong> {{ customer.email }}<br>
+            <strong>Alt Phone:</strong> {{ customer.alt_phone }}<br>
+            <strong>Address:</strong> {{ customer.address }}<br>
+            <strong>Order Type:</strong> {{ customer.order_type }}<br>
+            <strong>Payment Method:</strong> {{ customer.payment_method }}
+        </p>
+
+        {% if orders_by_customer.get(customer.name) %}
+        <table>
+            <tr>
+                <th>Vegetable Name</th>
+                <th>Quantity (kg)</th>
+                <th>Price per Kg</th>
+                <th>Total Price</th>
+            </tr>
+            {% for order in orders_by_customer[customer.name] %}
+            <tr>
+                <td>{{ order.vegetable_name }}</td>
+                <td>{{ order.quantity }}</td>
+                <td>₹{{ order.price_per_kg }}</td>
+                <td>₹{{ order.total_price }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="3" class="grand-total">Grand Total:</td>
+                <td><strong>₹{{ grand_totals[customer.name] }}</strong></td>
+            </tr>
+        </table>
+        {% else %}
+        <p class="no-orders">No orders placed yet.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,31 @@
+<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/viewstock.css') }}">
+
+</head>
+<body>
+
+<h2>Hello {{ username }}!</h2>
+<h3>Available Vegetables</h3>
+<div id="available-vegetables">
+    {% for vegetable in vegetable_stock %}
+    <div class="available-item">
+        <img src="{{ url_for('static', filename='images/' + vegetable['image']) }}" class="veg-image">
+        <p>Name: {{ vegetable['name'] }}</p>
+        <p>Price: ₹{{ vegetable['price'] }}/Kg</p>
+        <p>Quantity: {{ vegetable['quantity'] }} Kg</p>
+    </div>
+    {% else %}
+        <p>No stock available yet!</p>
+    {% endfor %}
+</div>
+
+<button onclick="location.href='{{ url_for('homepage') }}'">Go to Home Page</button>
+<button onclick="location.href='{{url_for('orderstock')}}'">Order your Veggies</button>
+</body>
+</html>

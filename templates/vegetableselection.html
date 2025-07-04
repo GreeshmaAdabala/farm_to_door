@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vegetableselection.css') }}">
+</head>
+<body>
+    <h2>Farmer Dashboard - Add Stock</h2>
+    <div class="image-container">
+        <div class="row">
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/brinjal.jpeg') }}" alt="Brinjal">
+                <p>Brinjal</p>
+                <input type="number" id="brinjal-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="brinjal-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Brinjal', 'brinjal-price', 'brinjal-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/cabbage.jpeg') }}" alt="Cabbage">
+                <p>Cabbage</p>
+                <input type="number" id="Cabbage-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="Cabbage-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Cabbage', 'Cabbage-price', 'Cabbage-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/carrot.jpeg') }}" alt="Carrot">
+                <p>Carrot</p>
+                <input type="number" id="carrot-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="carrot-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Carrot', 'carrot-price', 'carrot-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/cauli.jpg') }}" alt="Cauli Flower">
+                <p>Cauli Flower</p>
+                <input type="number" id="cauli-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="cauli-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Cauliflower', 'cauli-price', 'cauli-qty')">Add</button>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/cucumber.jpg') }}" alt="Cucumber">
+                <p>Cucumber</p>
+                <input type="number" id="cucumber-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="cucumber-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Cucumber', 'cucumber-price', 'cucumber-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/curry.jpeg') }}" alt="Curry Leaves">
+                <p>Curry Leaves</p>
+                <input type="number" id="curry-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="curry-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('CurryLeaves', 'curry-price', 'curry-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/drumstick.jpg') }}" alt="Drumstick">
+                <p>Drumstick</p>
+                <input type="number" id="drumstick-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="drumstick-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Drumstick', 'drumstick-price', 'drumstick-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/ivygourd.jpeg') }}" alt="Ivy Gourd">
+                <p>Ivy Gourd</p>
+                <input type="number" id="ivygourd-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="ivygourd-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('IvyGourd', 'ivygourd-price', 'ivygourd-qty')">Add</button>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/potato.jpeg') }}" alt="Potato">
+                <p>Potato</p>
+                <input type="number" id="potato-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="potato-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Potato', 'potato-price', 'potato-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/ridgegourd.jpg') }}" alt="Ridge Gourd">
+                <p>Ridge Gourd</p>
+                <input type="number" id="ridge-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="ridge-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Ridge Gourd', 'ridge-price', 'ridge-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/Spinach.jpeg') }}" alt="Spinach">
+                <p>Spinach</p>
+                <input type="number" id="spinach-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="spinach-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Spinach', 'spinach-price', 'spinach-qty')">Add</button>
+            </div>
+            <div class="item">
+                <img src="{{ url_for('static', filename='images/tomato.jpeg') }}" alt="Tomato">
+                <p>Tomato</p>
+                <input type="number" id="tomato-price" placeholder="Price per Kg" class="price">
+                <input type="number" id="tomato-qty" placeholder="Quantity (Kg)" class="quantity">
+                <button onclick="addVegetable('Tomato', 'tomato-price', 'tomato-qty')">Add</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>Available Vegetables</h2>
+    <div id="available-vegetables" class="image-container">
+        <p>Loading available stock...</p>
+    </div>
+
+    <!-- ✅ Save & View Buttons -->
+    <div style="margin-top: 20px; text-align: center;">
+        <button onclick="saveStock()">Save Stock</button>
+        <button onclick="location.href='{{ url_for('view_stock') }}'">View Saved Stock</button>
+        <button onclick="location.href='{{ url_for('homepage') }}'">Go to Home Page</button>
+        <form action="/farmer_view_orders" method="get">
+    <button type="submit">View Orders</button>
+</form>
+   
+     </div>
+
+    <script src="{{ url_for('static', filename='js/script1.js') }}"></script>
+
+</body>
+</html>

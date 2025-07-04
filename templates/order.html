@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Order</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/order.css') }}">
+</head>
+<body>
+    
+<script>
+function submitOrder() {
+    event.preventDefault();
+
+    fetch("/finalize_order", {
+        method: "POST"
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            document.getElementById("success-popup").style.display = "block";
+        } else {
+            alert("❌ " + data.message);
+        }
+    })
+    .catch(error => {
+        alert("❌ Error placing order!");
+        console.error(error);
+    });
+}
+
+function closePopup() {
+    document.getElementById("success-popup").style.display = "none";
+    window.location.href = "/customerdashboard";
+}
+</script>
+
+
+
+    <h1>Order Your Vegetables Online</h1>
+    <h2>Your Cart</h2>
+    {% if cart_items %}
+    {% set grand_total = namespace(value=0) %}
+    {% for item in cart_items %}
+        <div class="cart-item">
+            <p><strong>{{ item.name }}</strong></p>
+            <p>Quantity: {{ item.quantity }} Kg</p>
+            <p>Total: ₹{{ item.total }}</p>
+        </div>
+        {% set grand_total.value = grand_total.value + item.total %}
+    {% endfor %}
+    <hr>
+    <h2 style="color: green;">Grand Total: ₹{{ grand_total.value }}</h2>
+    <button type="button" onclick="submitOrder()">✔️ Finalize Order</button>
+
+{% else %}
+    <p>Your cart is empty.</p>
+{% endif %}
+
+    <!-- ✅ Success Popup -->
+<div id="success-popup">
+    <h2>✅ Thank you, {{ customer_name }}!</h2>
+    <p>Your order has been placed successfully.</p>
+    <button onclick="closePopup()">OK</button>
+</div>
+
+
+
+
+    <hr>
+    <h2>📞 Contact this number to order: <span style="color: green;">9609333222/9849975546</span></h2>
+    <p>Ping to any of these 2 numbers and send your Address via SMS or Whatsapp</p>
+    <p>Mode of Payment for Vegetables and Delivery Charges:Cash on Delivery</p>
+    <p>Your Vegetables are delivered to your </p>
+    <p>Thank you !!</p>
+
+   </div>
+
+</body>
+</html>

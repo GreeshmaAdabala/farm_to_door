@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Buyer</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/customer.css')}}">
+</head>
+<body>
+    
+    <div class="login-container">
+        <h1>WELCOME TO AGROCRAFT</h1>
+        <h2>CUSTOMER LOGIN</h2>
+        <form method="POST" action="{{ url_for('register_customer') }}">
+          <input type="text" id="username" name="username" placeholder="Enter your Name" minlength="3" maxlength="30" required />
+          <input type="text" id="phone" name="phone" placeholder="Phone Number" maxlength="10" required />
+
+        <button type="button" onclick="sendOTP()">Send OTP</button>
+         <section>
+          <div id="otp-section" style="display: none;"><br>
+            <input type="text" name="otp" placeholder="Enter OTP" required />
+
+            <button type="button" onclick="validateOTP(event)">Login</button>
+
+          </form>
+          </div>
+        </section>
+      </div>
+    </body>
+    </html>
+    <script src="{{ url_for('static', filename='js/customer.js') }}"></script>
+
+</body>
+</html>

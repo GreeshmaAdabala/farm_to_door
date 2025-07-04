@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Vegetables</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/viewstock.css') }}">
+    <script>
+        let cart = [];
+    
+        function validateQuantity(availableQty, price, vegName) {
+            const inputField = document.getElementById("quantity-" + vegName);
+            const totalPriceField = document.getElementById("total-price-" + vegName);
+            const quantity = parseFloat(inputField.value);
+    
+            if (isNaN(quantity) || quantity <= 0) {
+                totalPriceField.innerText = "Total Price: ₹0";
+                return;
+            }
+    
+            if (quantity > availableQty) {
+                alert("⚠️ Please enter a valid quantity. Only " + availableQty + " Kg available.");
+                inputField.value = "";
+                totalPriceField.innerText = "Total Price: ₹0";
+                return;
+            }
+    
+            const total = quantity * price;
+            totalPriceField.innerText = "Total Price: ₹" + total.toFixed(2);
+        }
+    
+        function addToCart(vegId, vegName, price) {
+    const quantityField = document.getElementById("quantity-" + vegName);
+    const quantity = parseFloat(quantityField.value);
+
+    if (isNaN(quantity) || quantity <= 0) {
+        alert("⚠️ Enter a valid quantity before adding to cart.");
+        return;
+    }
+
+    const availableQty = parseFloat(quantityField.max);
+    if (quantity > availableQty) {
+        alert("⚠️ Quantity exceeds available stock!");
+        return;
+    }
+
+    const total = quantity * price;
+    cart.push({ id: vegId, name: vegName, quantity: quantity, total: total });
+
+    alert("✅ " + vegName + " added to cart!");
+    updateCartDisplay();
+}
+
+    
+        function updateCartDisplay() {
+            const cartSection = document.getElementById("cart-items");
+            cartSection.innerHTML = "<h3>🛒 Cart</h3>";
+    
+            cart.forEach(item => {
+                cartSection.innerHTML += `
+                    <div class="cart-item">
+                        <p><strong>${item.name}</strong></p>
+                        <p>Quantity: ${item.quantity} Kg</p>
+                        <p>Total: ₹${item.total.toFixed(2)}</p>
+                        <hr>
+                    </div>`;
+            });
+        }
+    </script>
+    
+</head>
+<body>
+    <h1>Available Vegetables</h1>
+    <h2>Place your Order</h2>
+
+    <div id="available-vegetables">
+        {% for vegetable in vegetable_stock %}
+        <div class="available-item">
+            <img src="{{ url_for('static', filename='images/' + vegetable['image']) }}" class="veg-image">
+            <p>Name: {{ vegetable['name'] }}</p>
+            <p>Price: ₹{{ vegetable['price'] }}/Kg</p>
+            <p>Quantity Available: {{ vegetable['quantity'] }} Kg</p>
+            
+            Enter Quantity:
+            <input type="number" id="quantity-{{ vegetable['name'] }}" placeholder="Enter quantity" 
+                   min="1" max="{{ vegetable['quantity'] }}" 
+                   oninput="validateQuantity({{ vegetable['quantity'] }}, {{ vegetable['price'] }}, '{{ vegetable['name'] }}')" />
+            <p id="total-price-{{ vegetable['name'] }}">Total Price: ₹0</p>
+
+            <button onclick="addToCart({{ vegetable['id'] }}, '{{ vegetable['name'] }}', {{ vegetable['price'] }})">Add to Cart</button>
+
+        </div>
+        {% else %}
+            <p>No stock available yet!</p>
+        {% endfor %}
+    </div>
+
+    <hr>
+    <h2>Your Cart</h2>
+    <div id="cart-items"></div>
+
+    <br><br>
+    <button onclick="location.href='{{ url_for('homepage') }}'">Go to Home Page</button>
+    <button onclick="submitCartAndGoToOrder()"> View Order</button>
+
+    <script>
+        function submitCartAndGoToOrder() {
+            fetch("/save_cart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(cart)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    location.href = "/orderpage";
+                } else {
+                    alert("Something went wrong while saving the cart.");
+                }
+            });
+        }
+    </script>
+    
+
+</body>
+</html>
