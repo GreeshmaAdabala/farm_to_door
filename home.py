@@ -263,3 +263,11 @@ def view_orders():
     orders = cursor.fetchall()
     db.close()
     return render_template('view_orders.html', orders=orders)
+@home.route('/clear_orders')
+def clear_orders():
+    db = get_db_connection()
+    cursor = db.cursor()
+    cursor.execute("DELETE FROM customer_order")
+    db.commit()
+    db.close()
+    return "✅ All orders cleared!"
