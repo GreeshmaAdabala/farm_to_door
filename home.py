@@ -26,7 +26,7 @@ def farmer_login():
 @home.route('/farmer_view_orders')
 def farmer_view_orders():
     conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = conn.cursor()  # ✅
 
     # Get all customer details
     cursor.execute("SELECT * FROM customer_details")
@@ -70,13 +70,13 @@ def save_stock():
     cursor = db.cursor()
 
     farmer_name = session.get('farmer_name')
-    cursor.execute("DELETE FROM vegetable_stock WHERE farmer_name = %s", (farmer_name,))
+    cursor.execute("DELETE FROM vegetable_stock WHERE farmer_name = ?", (farmer_name,))
+
 
     for item in data:
-        cursor.execute(
-            "INSERT INTO vegetable_stock (farmer_name, name, price, quantity) VALUES (%s, %s, %s, %s)",
-            (farmer_name, item['name'], item['price'], item['quantity'])
-        )
+        cursor.execute("INSERT INTO vegetable_stock (farmer_name, name, price, quantity) VALUES (?, ?, ?, ?)",
+        (farmer_name, item['name'], item['price'], item['quantity']))
+
 
     db.commit()
     db.close()
@@ -101,8 +101,8 @@ def view_stock():
 
     farmer_name = session.get('farmer_name')
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM vegetable_stock WHERE farmer_name = %s", (farmer_name,))
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM vegetable_stock WHERE farmer_name = ?", (farmer_name,))
     vegetable_stock = cursor.fetchall()
     db.close()
 
@@ -134,11 +134,8 @@ def register_customer():
 
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("""
-    INSERT INTO customer_details 
-    (name, phone, alt_phone, email, address, order_type, payment_method)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-    (name, phone, alt_phone, email, address, order_type, payment_method))
+    cursor.execute("""INSERT INTO customer_details (name, phone, alt_phone, email, address, order_type, payment_method)VALUES (?, ?, ?, ?, ?, ?, ?)
+""", (name, phone, alt_phone, email, address, order_type, payment_method))
 
     db.commit()
     db.close()
@@ -155,7 +152,7 @@ def customerdashboard():
         return redirect(url_for('customerdashboard'))
 
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM vegetable_stock WHERE quantity > 0")
     vegetable_stock = cursor.fetchall()
     db.close()
@@ -184,7 +181,7 @@ def customerdashboard():
 @home.route('/orderstock')
 def orderstock():
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("SELECT * FROM vegetable_stock WHERE quantity > 0")
     vegetable_stock = cursor.fetchall()
     db.close()
@@ -242,7 +239,7 @@ def finalize_order():
             veg_id = item['id']
             quantity = float(item['quantity'])
 
-            cursor.execute("SELECT name, price, quantity FROM vegetable_stock WHERE id = %s", (veg_id,))
+            cursor.execute("SELECT name, price, quantity FROM vegetable_stock WHERE id = ?", (veg_id,))
             result = cursor.fetchone()
 
             if result and result[2] >= quantity:
@@ -250,13 +247,13 @@ def finalize_order():
                 price = float(result[1])
                 total = price * quantity
 
-                cursor.execute("UPDATE vegetable_stock SET quantity = quantity - %s WHERE id = %s", (quantity, veg_id))
+                cursor.execute("UPDATE vegetable_stock SET quantity = quantity -? WHERE id = ?", (quantity, veg_id))
 
                 # 👇 Remove veg_id if it's not in your customer_orders table
                 cursor.execute("""
                     INSERT INTO customer_order
                     (customer_name, vegetable_name, quantity, price_per_kg, total_price) 
-                    VALUES (%s, %s, %s, %s, %s)
+                    VALUES (?,?,?,?,?)
                 """, (customer_name, veg_name, quantity, price, total))
             else:
                 db.rollback()
@@ -276,17 +273,18 @@ def finalize_order():
 @home.route('/view_orders')
 def view_orders():
     db = get_db_connection()
-    cursor = db.cursor(dictionary=True)
+    cursor = db.cursor()
     cursor.execute("""
-        SELECT 
-            customer_name,
-            vegetable_name,
-            quantity,
-            price_per_kg,
-            total_price
-        FROM 
-            customer_orders
-    """)
+    SELECT 
+        customer_name,
+        vegetable_name,
+        quantity,
+        price_per_kg,
+        total_price
+    FROM 
+        customer_order
+""")
+
     orders = cursor.fetchall()
     db.close()
     return render_template('view_orders.html', orders=orders)
