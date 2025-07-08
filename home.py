@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-from app import verify_farmer_login, get_db_connection
+from util import verify_farmer_login, get_db_connection
 
 home = Flask(__name__)
 home.secret_key = 'your_secret_key'
@@ -26,17 +26,12 @@ def farmer_login():
 @home.route('/farmer_view_orders')
 def farmer_view_orders():
     conn = get_db_connection()
-    cursor = conn.cursor()  # ✅
-
-    # Get all customer details
+    cursor = conn.cursor()
     cursor.execute("SELECT * FROM customer_details")
     customers = cursor.fetchall()
-
-    # Get all customer orders
     cursor.execute("SELECT * FROM customer_order")
     all_orders = cursor.fetchall()
 
-    # Group orders and calculate grand total per customer
     orders_by_customer = {}
     grand_totals = {}
 
@@ -58,7 +53,6 @@ def farmer_view_orders():
         grand_totals=grand_totals
     )
 
-
 @home.route('/vegetableselection')
 def vegetableselection():
     return render_template('vegetableselection.html')
@@ -68,15 +62,12 @@ def save_stock():
     data = request.get_json()
     db = get_db_connection()
     cursor = db.cursor()
-
     farmer_name = session.get('farmer_name')
     cursor.execute("DELETE FROM vegetable_stock WHERE farmer_name = ?", (farmer_name,))
-
 
     for item in data:
         cursor.execute("INSERT INTO vegetable_stock (farmer_name, name, price, quantity) VALUES (?, ?, ?, ?)",
         (farmer_name, item['name'], item['price'], item['quantity']))
-
 
     db.commit()
     db.close()
@@ -106,6 +97,7 @@ def view_stock():
     vegetable_stock = cursor.fetchall()
     db.close()
 
+    vegetable_stock = [dict(veg) for veg in vegetable_stock]
     for veg in vegetable_stock:
         veg['image'] = image_map.get(veg['name'], 'default.jpg')
 
@@ -134,8 +126,8 @@ def register_customer():
 
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("""INSERT INTO customer_details (name, phone, alt_phone, email, address, order_type, payment_method)VALUES (?, ?, ?, ?, ?, ?, ?)
-""", (name, phone, alt_phone, email, address, order_type, payment_method))
+    cursor.execute("""INSERT INTO customer_details (name, phone, alt_phone, email, address, order_type, payment_method)VALUES (?, ?, ?, ?, ?, ?, ?)""",
+                   (name, phone, alt_phone, email, address, order_type, payment_method))
 
     db.commit()
     db.close()
@@ -172,6 +164,7 @@ def customerdashboard():
         "Spinach": "Spinach.jpeg"
     }
 
+    vegetable_stock = [dict(veg) for veg in vegetable_stock]
     for veg in vegetable_stock:
         veg['image'] = image_map.get(veg['name'], 'default.jpg')
 
@@ -185,6 +178,7 @@ def orderstock():
     cursor.execute("SELECT * FROM vegetable_stock WHERE quantity > 0")
     vegetable_stock = cursor.fetchall()
     db.close()
+
     image_map = {
         "Brinjal": "brinjal.jpeg",
         "Cabbage": "cabbage.jpeg",
@@ -200,6 +194,7 @@ def orderstock():
         "Spinach": "Spinach.jpeg"
     }
 
+    vegetable_stock = [dict(veg) for veg in vegetable_stock]
     for veg in vegetable_stock:
         veg['image'] = image_map.get(veg['name'], 'default.jpg')
 
@@ -216,19 +211,14 @@ def save_cart():
 def orderpage():
     customer_name = session.get('customer_name', 'Customer')
     cart = session.get('cart', [])
-    print("DEBUG: Cart in /orderpage:", cart)
-    print("DEBUG: Customer in /orderpage:", customer_name)
     return render_template('order.html', customer_name=customer_name, cart_items=cart)
+
 @home.route('/finalize_order', methods=['POST'])
 def finalize_order():
     cart = session.get('cart', [])
     customer_name = session.get('customer_name')
 
-    print("DEBUG: Cart =", cart)
-    print("DEBUG: Customer =", customer_name)
-
     if not cart or not customer_name:
-        print("❌ Cart or customer_name missing!")
         return jsonify({'status': 'fail', 'message': 'Session expired or missing data'}), 400
 
     try:
@@ -238,7 +228,6 @@ def finalize_order():
         for item in cart:
             veg_id = item['id']
             quantity = float(item['quantity'])
-
             cursor.execute("SELECT name, price, quantity FROM vegetable_stock WHERE id = ?", (veg_id,))
             result = cursor.fetchone()
 
@@ -248,8 +237,6 @@ def finalize_order():
                 total = price * quantity
 
                 cursor.execute("UPDATE vegetable_stock SET quantity = quantity -? WHERE id = ?", (quantity, veg_id))
-
-                # 👇 Remove veg_id if it's not in your customer_orders table
                 cursor.execute("""
                     INSERT INTO customer_order
                     (customer_name, vegetable_name, quantity, price_per_kg, total_price) 
@@ -266,26 +253,13 @@ def finalize_order():
         return jsonify({'status': 'success'})
 
     except Exception as e:
-        print("❌ Error in finalize_order:", e)
         return jsonify({'status': 'fail', 'message': str(e)}), 500
-
 
 @home.route('/view_orders')
 def view_orders():
     db = get_db_connection()
     cursor = db.cursor()
-    cursor.execute("""
-    SELECT 
-        customer_name,
-        vegetable_name,
-        quantity,
-        price_per_kg,
-        total_price
-    FROM 
-        customer_order
-""")
-
+    cursor.execute("SELECT customer_name, vegetable_name, quantity, price_per_kg, total_price FROM customer_order")
     orders = cursor.fetchall()
     db.close()
     return render_template('view_orders.html', orders=orders)
-
